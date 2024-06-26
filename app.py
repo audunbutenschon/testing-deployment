@@ -1,25 +1,26 @@
 import streamlit as st
 
-def main():
-    st.title('My Streamlit App')
+st.title("Echo Bot")
 
-    # Text Input
-    user_input = st.text_input("Enter some text")
+# Initialize chat history
+if "messages" not in st.session_state:
+    st.session_state.messages = []
 
-    # Slider
-    slider_val = st.slider('Select a range', 0.0, 100.0, (25.0, 75.0))
+# Display chat messages from history on app rerun
+for message in st.session_state.messages:
+    with st.chat_message(message["role"]):
+        st.markdown(message["content"])
 
-    # Checkbox
-    checkbox_val = st.checkbox('Check me out')
+# React to user input
+if prompt := st.chat_input("What is up?"):
+    # Display user message in chat message container
+    st.chat_message("user").markdown(prompt)
+    # Add user message to chat history
+    st.session_state.messages.append({"role": "user", "content": prompt})
 
-    # Button
-    if st.button('Press Me'):
-        st.write('You pressed the button!')
-
-    # Display user selections
-    st.write(f'You entered: {user_input}')
-    st.write(f'You selected a range from {slider_val[0]} to {slider_val[1]}')
-    st.write(f'Checkbox is {"checked" if checkbox_val else "not checked"}')
-
-if __name__ == "__main__":
-    main()
+    response = f"Echo: {prompt}"
+    # Display assistant response in chat message container
+    with st.chat_message("assistant"):
+        st.markdown(response)
+    # Add assistant response to chat history
+    st.session_state.messages.append({"role": "assistant", "content": response})
